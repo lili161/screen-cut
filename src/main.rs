@@ -1,3 +1,5 @@
+extern crate pretty_env_logger;
+#[macro_use] extern crate log;
 use image::io::Reader as ImageReader;
 use std::path::PathBuf;
 use winit::{
@@ -7,6 +9,8 @@ use winit::{
     window::{Window, WindowBuilder},
 };
 fn main() {
+    pretty_env_logger::init();
+
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
         .with_resizable(true)
@@ -14,12 +18,11 @@ fn main() {
         .with_skip_taskbar(true)
         .build(&event_loop)
         .unwrap();
-
+    info!("begin");
     // let image_path = PathBuf::from("path/to/image.png");
     // let image = ImageReader::open(image_path).unwrap().decode().unwrap();
     event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Wait;
-
         match event {
             Event::WindowEvent {
                 event: WindowEvent::CloseRequested,
@@ -38,7 +41,7 @@ fn main() {
                 match event {
                     DeviceEvent::Key(keyboard_input) => match keyboard_input.virtual_keycode {
                         Some(VirtualKeyCode::Escape) => {
-                            println!("End");
+                            info!("END!");
                             *control_flow = ControlFlow::Exit;
                         }
                         _ => {}
@@ -48,7 +51,7 @@ fn main() {
             }
 
             _ => {
-                println!("Unhandled event: {:?}", event);
+                warn!("Unhandled event: {:?}", event)
             }
         }
     });
